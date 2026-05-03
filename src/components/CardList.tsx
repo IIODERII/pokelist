@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import type { Filters, Pokemon } from "../interfaces";
 import Card from "./Card";
 import FiltersComponent from "./FiltersComponent";
+import { Link } from "react-router-dom";
 
 const fetchPokemons = async (): Promise<Pokemon[]> => {
     const listRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50');
@@ -91,8 +92,6 @@ function CardList() {
     useEffect(() => {
         fetchPokemons().then(setPokemonList);
     }, []);
-    useEffect(() => {
-    }, [filters]);
 
     return (
         <>
@@ -102,7 +101,9 @@ function CardList() {
                     .filter((pokemon) => filterElements(pokemon))
                     .sort((a, b) => sortElements(a, b))
                     .map((pokemon) => (
-                        <Card key={pokemon.id} pokemon={pokemon} />
+                        <Link key={pokemon.id} to={`/${pokemon.id}`}>
+                            <Card pokemon={pokemon} />
+                        </Link>
                     ))}
             </div>
         </>
