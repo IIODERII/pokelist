@@ -7,10 +7,11 @@ export interface Pokemon {
 
 export interface Filters {
     search: string,
+    selectedType: string,
     sortOrder: ESortOrders
 }
 
-export type ESortOrders = 'ALPHABET_ASC' | 'ALPHABET_DESC' | "";
+export type ESortOrders = 'ALPHABET_ASC' | 'ALPHABET_DESC' | 'NUM_ASC' | 'NUM_DESC';
 
 export function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);

@@ -42,11 +42,15 @@ const getTypesData = async (types: { slot: number, type: { name: string, url: st
 
 function CardList() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-    const [filters, setFilters] = useState<Filters>({ search: '', sortOrder: '' });
+    const [filters, setFilters] = useState<Filters>({ search: '', selectedType: '', sortOrder: 'NUM_DESC' });
 
     const filterElements = (pokemon: Pokemon) => {
         if (pokemon.name.toLowerCase().includes(filters.search.toLowerCase())) {
-            return true;
+            if(filters.selectedType == "") return true;
+
+            if(pokemon.types.some(x => x.name.toLowerCase() == filters.selectedType.toLowerCase())) return true;
+
+            return false;
         }
         return false;
     }
@@ -66,6 +70,20 @@ function CardList() {
             if (a.name > b.name) {
                 return -1;
             }
+        }else if (filters.sortOrder == 'NUM_DESC') {
+            if (a.id < b.id) {
+                return -1;
+            }
+            if (a.id > b.id) {
+                return 1;
+            }
+        } else if (filters.sortOrder == 'NUM_ASC') {
+            if (a.id < b.id) {
+                return 1;
+            }
+            if (a.id > b.id) {
+                return -1;
+            }
         }
         return 0;
     }
@@ -73,6 +91,8 @@ function CardList() {
     useEffect(() => {
         fetchPokemons().then(setPokemonList);
     }, []);
+    useEffect(() => {
+    }, [filters]);
 
     return (
         <>
