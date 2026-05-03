@@ -1,0 +1,10 @@
+.filters {
+    button {
+        cursor: pointer;
+        transition: all .1s linear;
+
+        &:hover {
+            scale: 1.02;
+        }
+    }
+}

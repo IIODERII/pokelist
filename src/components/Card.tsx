@@ -10,7 +10,7 @@ function Card({ pokemon }: { pokemon: Pokemon }) {
 
             <div className="info-container mt-5">
                 <div className="text-center text-2xl">{capitalizeFirstLetter(pokemon.name)}</div>
-                <div className="text-center text-gray-400">#{pokemon.pokedexNumber.toString().padStart(4, "0")}</div>
+                <div className="text-center text-gray-400">#{pokemon.id.toString().padStart(4, "0")}</div>
 
                 <div className="flex justify-center gap-3 mt-6">
                     {pokemon.types.map((type) => (

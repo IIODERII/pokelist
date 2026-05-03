@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import type { Pokemon } from "../interfaces";
+import type { Filters, Pokemon } from "../interfaces";
 import Card from "./Card";
+import FiltersComponent from "./FiltersComponent";
 
 const fetchPokemons = async (): Promise<Pokemon[]> => {
     const listRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50');
@@ -16,7 +17,6 @@ const fetchPokemons = async (): Promise<Pokemon[]> => {
                         name: data.name,
                         types: await getTypesData(data.types),
                         imageUrl: data.sprites.front_default,
-                        pokedexNumber: data.order
                     }
                 ))
         )
@@ -25,9 +25,9 @@ const fetchPokemons = async (): Promise<Pokemon[]> => {
     return pokemons;
 }
 
-const getTypesData = async (types: {slot: number, type: { name: string, url: string }}[]): Promise<{ name: string, iconUrl: string }[]> => {
+const getTypesData = async (types: { slot: number, type: { name: string, url: string } }[]): Promise<{ name: string, iconUrl: string }[]> => {
     return await Promise.all(
-        types.map((type: {slot: number, type: { name: string, url: string }}) =>
+        types.map((type: { slot: number, type: { name: string, url: string } }) =>
             fetch(type.type.url)
                 .then(res => res.json())
                 .then(t => (
@@ -42,17 +42,50 @@ const getTypesData = async (types: {slot: number, type: { name: string, url: str
 
 function CardList() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
+    const [filters, setFilters] = useState<Filters>({ search: '', sortOrder: '' });
+
+    const filterElements = (pokemon: Pokemon) => {
+        if (pokemon.name.toLowerCase().includes(filters.search.toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
+
+    const sortElements = (a: Pokemon, b: Pokemon) => {
+        if (filters.sortOrder == 'ALPHABET_DESC') {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+        } else if (filters.sortOrder == 'ALPHABET_ASC') {
+            if (a.name < b.name) {
+                return 1;
+            }
+            if (a.name > b.name) {
+                return -1;
+            }
+        }
+        return 0;
+    }
 
     useEffect(() => {
         fetchPokemons().then(setPokemonList);
     }, []);
 
     return (
-        <div className="grid grid-cols-5 gap-10 mt-10">
-            {pokemonList.map((pokemon) => (
-                <Card key={pokemon.id} pokemon={pokemon}/>
-            ))}
-        </div>
+        <>
+            <FiltersComponent setFilters={setFilters} filters={filters} />
+            <div className="grid grid-cols-5 gap-10 mt-10">
+                {pokemonList
+                    .filter((pokemon) => filterElements(pokemon))
+                    .sort((a, b) => sortElements(a, b))
+                    .map((pokemon) => (
+                        <Card key={pokemon.id} pokemon={pokemon} />
+                    ))}
+            </div>
+        </>
     )
 }
 
