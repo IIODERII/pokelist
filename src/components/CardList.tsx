@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import type { Pokemon } from "../interfaces";
+import Card from "./Card";
 
 const fetchPokemons = async (): Promise<Pokemon[]> => {
     const listRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=50');
@@ -47,12 +48,9 @@ function CardList() {
     }, []);
 
     return (
-        <div className="mt-10">
+        <div className="grid grid-cols-5 gap-10 mt-10">
             {pokemonList.map((pokemon) => (
-                <div key={pokemon.id}>
-                    <img src={pokemon.imageUrl} alt="" />
-                    <div>{pokemon.name} - {pokemon.types.map((type) => (<div key={type.name}><img src={type.iconUrl} alt="" />{type.name}</div>))}</div>
-                </div>
+                <Card key={pokemon.id} pokemon={pokemon}/>
             ))}
         </div>
     )

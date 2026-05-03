@@ -1,0 +1,15 @@
+.card {
+    cursor: pointer;
+    transition: all .1s linear;
+
+    &:hover{
+        scale: 1.02;
+    }
+
+    .types {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        overflow: hidden;
+    }
+}
